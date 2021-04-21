@@ -1,0 +1,21 @@
+A aplicação se trata de um sistema backend que irá armazenar
+as configurações de um chat definido pelo cliente para futuras
+conversas com os atendentes de uma empresa supositória, além disso
+a aplicação irá guardar o histórico de conversas do mesmo com cada 
+atendente. 
+
+->O que é NodeJs?
+-O node trata-se de um mecanismo que roda automaticamente no servidor de forma
+a possibilitar a recepção e processamento de várias requisições simultâneas
+direcionadas à ele. Para fazer isso cada requisição é recebida separadamente pelo 
+"Event loop", que é uma single Thread (roda sozinha), e repassada por um "delegate"
+para outras Threads ( ou POSIX Async threads) que são criadas para cada uma das requisições 
+recebidas, podendo assim, que todas as elas possam ser processadas simultaneamente.
+Para promover o processamento das informações é utilizada a linguagem JavaScript pelo seu 
+caráter conhecido como "No-blocking IO", que permite que o código escrito com essa linguagem
+não seja parado por causa do excesso de requisições.
+
+
+-O TypeScript é um superSet da linguagen= JavaScript, ou seja, não é outra linguagem e sim
+o próprio JS, porém, mais aperfeiçoado e com outras features. Ele permite a tipagem dos objetos,
+tipos de retorno da API ou da aplicação  e tipos de atributos de requisição (POST, PUT, GET)

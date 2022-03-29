@@ -1,0 +1,119 @@
+A aplicação se trata de um sistema backend que irá armazenar
+as configurações de um chat definido pelo cliente para futuras
+conversas com os atendentes de uma empresa supositória, além disso
+a aplicação irá guardar o histórico de conversas do mesmo com cada 
+atendente. 
+
+->O que é NodeJs?
+-O node trata-se de um mecanismo que roda automaticamente no servidor de forma
+a possibilitar a recepção e processamento de várias requisições simultâneas
+direcionadas à ele. Para fazer isso cada requisição é recebida separadamente pelo 
+"Event loop", que é uma single Thread (roda sozinha), e repassada por um "delegate"
+para outras Threads ( ou POSIX Async threads) que são criadas para cada uma das requisições 
+recebidas, podendo assim, que todas as elas possam ser processadas simultaneamente.
+Para promover o processamento das informações é utilizada a linguagem JavaScript pelo seu 
+caráter conhecido como "No-blocking IO", que permite que o código escrito com essa linguagem
+não seja parado por causa do excesso de requisições.
+
+
+-O TypeScript é um superSet da linguagem JavaScript, ou seja, não é outra linguagem e sim
+o próprio JS, porém, mais aperfeiçoado e com outras features. Ele permite a tipagem dos objetos,
+tipos de retorno da API ou da aplicação e tipos de atributos de requisição (POST, PUT, GET)
+
+
+Tipos de bancos de dados:
+-relacionais (SQL, mysql, oracle, postgree)
+-não relacionais (mongoDB)
+
+Para esse projeto utilizaremos um banco de dados relacional, no caso postgree.js,
+para isso é necessário baixar o drive nativo do "Postgree.js". Nem todos os drives trabalham 
+da mesma forma. O ruim do drive nativo é que a aplicação fica limitada somente àquele 
+driver. Caso vc queira mudar para outro vc vai ter que alterar todos os comandos.
+
+Outra opção além dos drives são os knew builders que são bibliotecas que auxiliam no acesso
+ao banco, no caso será utilizado o "knex.js". Eles proporcionam comandos mais fáceis ao invés de 
+escrever todos os comandos SQL necessários.
+
+outra opção seriam os frameworks do tipo ORM(Object Relational Mapper), no caso utilzaremos o TypeORM, 
+que promovem a relação do Objeto 
+com Entidades (tabelas). Basicamente eles relacionam/conectam as classes dos objetos com suas respectivas 
+tabelas no banco de dados. Também é possivel fazer anotations no código fonte junto com TypeScript. 
+Com os ORMs também é possível criar querys com SQL mais "puros", assim criar uma query utilizando os 
+padrões do framework.
+
+Ao instalar o typeOrm devemos criar um arquivo de configuração, por exemplo, o database que vc 
+está utilizando, no caso utilizaremos o sqlLite3. O arquivo deve ter o nome "ormconfig.json" e 
+deve ser deixado na raiz do projeto.
+também deverá ser criado um outro arquivo de configuração de conexão ao banco de dados, ele deve
+ficar dentro de uma pasta(com nome database) que por sua vez fica dentro de src.
+
+//----------------------------------------------------------------------------------------------------------
+Migrations:
+-São registros da ações que o dev fez no database. Ou seja, atuam como um histórico de alterações realizadas
+ao longo do desenvolvimento.
+
+Para criar uma migration, primeiro é necessário indicar o local do seu database  adiconando o 
+seguinte script no arquivo "orconfig.json":
+  
+     "database": "./src/database/database.sqlite"
+
+Também deve-se indicar onde ficará todas as migrations criadas para a execução delas
+através do seguinte script:
+     
+    "migrations": ["./src/database/migrations/**.ts"]
+    OBS: os ateriscos representam todos os arquivos do tipo ts
+
+Para criar uma migration basta criar o script (para rodar e criar migrations) no packege.json:
+     "typeorm": "ts-node-dev node_modules/typeorm/cli.js"
+
+Para determinar o local onde as migrations serão criadas e procuradas adicione o seguinte script
+dentro do arquivo "ormconfig.json":
+
+   "cli": {"migrationsDir": "./src/database/migrations"}
+
+Comando para executar o script "typeorm" e criar um migration:
+
+    "yarn typeorm migration:create -n <nome da migration>"
+
+-o arquivo criado terá uma classe com 2 funções assíncronas, up e down.
+No up contém o código que será rodado a partir do comando. O comando abaixo 
+executa a query SQL necessária e aplica as alterações que você fez na função UP do migration 
+no database. 
+"yarn typorm migration:run"
+
+-caso precise reverter as alterações quando o código migration foi executado "run" 
+deve-se colocar o código dentro da função down e executar:
+"yarn typeorm migration:revert"
+//----------------------------------------------------------------------------------------------------------
+
+Repositórios:
+-Servem para manipular os dados do database da aplicação. Ele favorece a comunicação entre as entidades e
+o banco de dados. Cada classe do repositório representa uma entidade no database. As entidades representam as 
+tabelas do banco de dados na aplicação em si.
+
+Criando repositories:
+-crie uma pasta com nome "repositories" dentro de src e depois o arquivo SettingsRepository.ts
+
+//----------------------------------------------------------------------------------------------------------
+
+Controllers:
+-Tem a função de interligar as rotas com repositórios. Assim deve-se criar uma pasta de nome "controllers" e, dentro,
+criar um arquivo com o nome "SettingsController.ts"
+
+Services:
+-Para não deixar o Controller com a função de adicionar o objeto recebido na tabela
+e depois retornar o mesmo deve-se criar uma classe de serviço para auxiliá-lo nisso. Logo,
+deve-se criar a pasta "services" dentro de src e, na mesma, criar o arquivo "SettingsService.ts"
+
+//----------------------------------------------------------------------------------------------------------
+
+-Criando tabela de usuários:
+yarn typeorm migration:create -n CreateUsers 
+
+-agora você faz as alterações nos métodos Up e Down no migration gerado
+e agora roda o seguinte comando:
+
+yarn typeorm migration:run
+
+-Pronto! Agora a tabela "Users" foi adicionada ao database e você pode criar 
+uma entidade que a represente na aplicação
